@@ -1,0 +1,68 @@
+// vue 
+
+
+    // Ajout de la JTable dans un JScrollPane pour pouvoir scroller si besoin
+    JScrollPane scrollPane = new JScrollPane(this.tableVehicules);
+    scrollPane.setBounds(50, 50, 700, 300);
+    this.add(scrollPane);
+    
+    // Ajout des boutons pour ajouter, modifier ou supprimer un véhicule
+    JButton boutonAjouter = new JButton("Ajouter");
+    boutonAjouter.setBounds(50, 370, 100, 30);
+    boutonAjouter.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ajouterVehicule();
+        }
+    });
+    this.add(boutonAjouter);
+    
+    JButton boutonModifier = new JButton("Modifier");
+    boutonModifier.setBounds(200, 370, 100, 30);
+    boutonModifier.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            modifierVehicule();
+        }
+    });
+    this.add(boutonModifier);
+    
+    JButton boutonSupprimer = new JButton("Supprimer");
+    boutonSupprimer.setBounds(350, 370, 100, 30);
+    boutonSupprimer.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            supprimerVehicule();
+        }
+    });
+    this.add(boutonSupprimer);
+    
+    // Mise à jour de la JTable
+    this.updateTable();
+}
+
+/**
+ * Méthode permettant d'ajouter un nouveau véhicule
+ */
+private void ajouterVehicule() {
+    AjouterVehiculeDialog dialog = new AjouterVehiculeDialog(this, "Ajouter un véhicule", true);
+    dialog.setVisible(true);
+    Vehicule vehicule = dialog.getVehicule();
+    if (vehicule != null) {
+        this.locationService.ajouterVehicule(vehicule);
+        this.updateTable();
+    }
+}
+
+/**
+ * Méthode permettant de modifier un véhicule existant
+ */
+private void modifierVehicule() {
+    int selectedRow = this.tableVehicules.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Veuillez sélectionner un véhicule à modifier");
+        return;
+    }
+    int idvehicule = (int) this.tableVehicules.getValueAt(selectedRow, 0);
+    Vehicule vehicule = this.locationService.getVehicule(idvehicule);
+    ModifierVehiculeDialog dialog = new ModifierVehiculeDialog
